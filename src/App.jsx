@@ -1,30 +1,47 @@
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './App.css';
-import TaskCreate from './components/TaskCreate';
-import TaskList from './components/TaskList';
+import TaskCreate from './components/TaskCreate';//TaskCreate props olaraq esas componente oturulur
+import TaskList from './components/TaskList';//TaskList props olaraq esas olaraq componente oturulur
+import axios from 'axios'
 
 
 function App() {
-  const [tasks, setTasks] = useState([])
-  const createTask = (title,task) =>{
-    const createdTasks = [
-      ...tasks,
-      {
-        id:Math.round(Math.random()*999999),
-        title,
-        task
-      },
-    ];
+  const [tasks, setTasks] = useState([])//ilc once useState snippet istifade edrek default deyeri bos array olan tasks ve bu tasks update etmek ucun settasks 
+
+  const createTask = async (title,task) =>{
+    const response = await axios.post('http://localhost:3004/tasks',{
+      title,
+      task
+    });
+    console.log(response);
+    const createdTasks = [...tasks,response.data];
     setTasks(createdTasks);
-}
-  const handleTaskById = (id) =>{
+  }
+
+  const fetchTasks =  async () =>{
+    const response =  await axios.get('http://localhost:3004/tasks')
+    debugger
+    setTasks(response.data)
+  }
+
+  useEffect(()=>{
+    fetchTasks();
+  },[])
+
+  const handleTaskById = async(id) =>{
+    await axios.delete(`http://localhost:3004/tasks/${id}`)
     const afterDeleteingTask = tasks.filter((task)=>{
       return task.id !== id;
     })
     setTasks(afterDeleteingTask);
   }
-  const editTaskById = (id,updateTitle,updateTask) =>{
+
+  const editTaskById = async(id,updateTitle,updateTask) =>{
+    await axios.put(`http://localhost:3004/tasks/${id}`,{
+      title:updateTitle,
+      task:updateTask
+    })
     const updateingTask = tasks.map((task)=>{
       if(task.id === id){
         return {id,title:updateTitle,task:updateTask}
