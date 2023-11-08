@@ -1,7 +1,9 @@
 import { useState } from "react"
+import {useContext } from 'react';
+import taskContext from '../context/task';
 
-
-function TaskCreate({onCreate,tasks,taskFormUpdate,onUpdate}) {//TaskCreate funksiyasinin icinde verdiyimiz parametrler props olaraq diger componentlerden oturduyumuz datalar funksiya icinde teyin edirik
+function TaskCreate({tasks,taskFormUpdate,onUpdate}) {//TaskCreate funksiyasinin icinde verdiyimiz parametrler props olaraq diger componentlerden oturduyumuz datalar funksiya icinde teyin edirik
+    const {editTaskById,createTask,} = useContext(taskContext)
     const [title, setTitle] = useState(tasks ? tasks.title : '')//useState snippet istifade ederek title default deyerini ve default deyeri update etmek ucun title setTitle adinda iki deyisen teyin edirik. useState(tasks ? tasks.title : '') bu ifade eger tasks true -sa yeni update olunubsa update olunmus veziyyetini gosterilsin : deyilse bos string qayatrsin ""
     const [task, setTask] = useState(tasks ? tasks.task : '')//useState snippet istifade ederek task default deyerini ve default deyeri update etmek ucun task setTask adinda iki deyisen teyin edirik
     
@@ -15,9 +17,11 @@ function TaskCreate({onCreate,tasks,taskFormUpdate,onUpdate}) {//TaskCreate funk
         event.preventDefault()//button onclick olduqda sehifenin refresh olunmasinin qarsisinin alinmasi ucun preventDefault ile default veziyyetinin qarsini aliriq
         if(taskFormUpdate){//daha sonra todolist create olunmusmu yoxsa update olunmusmu bilmek ucun if else condition istifade edirik
             onUpdate(tasks.id,title,task)//ilk once eger taskFormUpdate olunubsa yeni movcud listin title ,task deyisdirilibse .TaskShow.jsx yazdigimiz onUpdate icindeki deyeri props olaraq taskCreate otururuk
+            //editTaskById(tasks.id,title,task)
         }else{// deyilse yeni false ise default olaraq yeni bir list yaradir.
 
-            onCreate(title,task)
+            //onCreate(title,task)
+            createTask(title,task)
         }
         setTitle('')//title daxil etdikden sonra inputun icinde datani silerek bos input qaytarir
         setTask('')//task daxil etdikden sonra inputun icinden datani silerek bos input qaytaarir

@@ -1,7 +1,10 @@
 import { useState } from "react";
 import TaskCreate from "./TaskCreate";
+import {useContext } from 'react';
+import taskContext from '../context/task';
 
-function TaskShow({taskOne,onDelete,onUpdate}) {
+function TaskShow({taskOne}) {
+  const {handleTaskById,editTaskById} = useContext(taskContext)
    const title = taskOne.title;//create olunmus title title adina beraber edilerek Jsx formatinda {breakText(title)} seklinde verilir  breakText funksiyasinin oturulur
    const task = taskOne.task;//create olunmus task title adina beraber edilerek Jsx formatinda {breakText(task)} seklinde verilir  breakText funksiyasinin oturulur
   const [editTask, setEditTask] = useState(false)//useState snippet istifade ederek edit etdiyimiz taski deyerni setEditTask deyerinden istifade edrek update olunmus veziyyetde gosteririk
@@ -21,14 +24,16 @@ function TaskShow({taskOne,onDelete,onUpdate}) {
     }
    };
    const handleDeleteTask = () =>{//handleDeleteTask funksiyasi vasitesile tasklarin silinmesi heyata kecirilir 
-    onDelete(taskOne.id);//tasklarin id gore silinir
+    //onDelete(taskOne.id);//tasklarin id gore silinir
+    handleTaskById(taskOne.id)
    }
    const handleUpdateTask = () =>{//handleUpdateTask funksiyasina gore update funksiyasi heyata kecirilir
     setEditTask(!editTask);//!editTask bu cur yazilisi true menasini verir yeni update veziyyetindedirse
    }
    const handleSubmit = (id,updateTitle,updateTask) =>{//handleSubmit funksiyasinda ise tasklari title ve task hisselerine  gore parametr otururuk.
     setEditTask(false);
-    onUpdate(id,updateTitle,updateTask);//tasklari id gore title ve task hissesini update edirik
+    // onUpdate(id,updateTitle,updateTask);//tasklari id gore title ve task hissesini update edirik
+    editTaskById(id,updateTitle,updateTask)
    }
     return ( <div className="taskShow">
       {/* TaskCreate props olaraq icindeki datalarla Task Show otururuk. editTask ? true -sa update button click edilib melumatlar deyisdirilidikden sonra Edit button cilick olunarsa bize update olunmus data gosterilir*/}
